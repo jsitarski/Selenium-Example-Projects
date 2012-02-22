@@ -1,0 +1,12 @@
+require 'rake/testtask'
+
+task :default => [:test]
+
+ENV["WEBDRIVER_URL"] = "http://192.168.56.101:8080/wd/hub"
+
+Rake::TestTask.new do |t|
+  t.libs << "test"
+  t.test_files = FileList['test/test*.rb']
+  t.verbose = true
+  t.ruby_opts = ["-rubygems"]
+end
