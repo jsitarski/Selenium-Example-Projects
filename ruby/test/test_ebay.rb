@@ -5,6 +5,7 @@ class TestEbay < Test::Unit::TestCase
 
   def setup
     @driver = Selenium::WebDriver.for(:firefox)
+    #@driver = Selenium::WebDriver.for(:remote, :url => ENV['WEBDRIVER_URL'])
     @base_url = "http://www.ebay.com/"
     @driver.manage.timeouts.implicit_wait = 30
     @verification_errors = []
