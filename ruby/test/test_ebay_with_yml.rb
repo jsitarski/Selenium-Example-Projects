@@ -1,13 +1,19 @@
 require "selenium-webdriver"
 require "test/unit"
+require "yaml"
+require "user_util"
 
-class TestEbay < Test::Unit::TestCase
+class TestEbayWithYml < Test::Unit::TestCase
+  include UserUtil
 
   def setup
-    @driver = Selenium::WebDriver.for(:firefox)
+    @config = YAML::load(File.open('config/endpoint.yml'))
+    @driver = Selenium::WebDriver.for(@config['browser'].to_sym)
+    #@driver = Selenium::WebDriver.for(:remote, :url => ENV['WEBDRIVER_URL'])
     @base_url = "http://www.ebay.com/"
     @driver.manage.timeouts.implicit_wait = 30
     @verification_errors = []
+    @form_data = YAML::load(File.open('test/form_data/ebay_search.yml'))
   end
   
   def teardown
@@ -19,7 +25,7 @@ class TestEbay < Test::Unit::TestCase
     @driver.get(@base_url + "/")
     @driver.find_element(:id, "_nkw").click
     @driver.find_element(:id, "_nkw").clear
-    @driver.find_element(:id, "_nkw").send_keys "bmw"
+    @driver.find_element(:id, "_nkw").send_keys @form_data['search_value']
     @driver.find_element(:id, "ghSearch").click
     assert element_present?(:link, "eBay Motors")
   end
